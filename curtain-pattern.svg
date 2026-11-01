@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="640" viewBox="0 0 240 640" fill="none">
+  <title>Seamless olive curtain folds</title>
+  <defs>
+    <linearGradient id="fold" x1="0" y1="0" x2="80" y2="0" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
+      <stop stop-color="#354326" stop-opacity=".12"/>
+      <stop offset=".35" stop-color="#d8d5a4" stop-opacity=".1"/>
+      <stop offset=".72" stop-color="#354326" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#354326" stop-opacity=".12"/>
+    </linearGradient>
+    <!-- Endpoints and tangents match at the top and bottom of each tile. -->
+    <path id="curve" d="M0 0 C0 80 28 80 28 160 S0 240 0 320 S-28 400 -28 480 S0 560 0 640"/>
+    <g id="pleat">
+      <use href="#curve" stroke="#344126" stroke-opacity=".24" stroke-width="1.5"/>
+      <use href="#curve" transform="translate(6)" stroke="#e0dcb0" stroke-opacity=".2" stroke-width="1"/>
+      <use href="#curve" transform="translate(19)" stroke="#344126" stroke-opacity=".12" stroke-width="1"/>
+      <use href="#curve" transform="translate(29)" stroke="#e0dcb0" stroke-opacity=".12" stroke-width="1"/>
+    </g>
+  </defs>
+  <path fill="url(#fold)" d="M0 0h240v640H0z"/>
+  <use href="#pleat" x="-40"/>
+  <use href="#pleat" x="40"/>
+  <use href="#pleat" x="120"/>
+  <use href="#pleat" x="200"/>
+  <use href="#pleat" x="280"/>
+</svg>
