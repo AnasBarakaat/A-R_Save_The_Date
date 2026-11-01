@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#151811">
+  <meta name="description" content="Anas & Reem — save the date, 12 December 2026.">
+  <title>Anas & Reem · Save the Date</title>
+  <icon rel="icon" href="favicon.ico" type="image/x-icon"></icon>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    :root { color-scheme: dark; --green: #697344; --pearl: #f5f1e7; --fade: 650ms; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #151811; color: var(--pearl); font-family: Georgia, 'Times New Roman', serif; }
+    main { position: fixed; inset: 0; overflow: hidden; }
+    .film { position: absolute; inset: 0; display: flex; justify-content: center; }
+    video { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; cursor: pointer; }
+    .play { position: absolute; top: 45%; border: 1px solid var(--green); border-radius: 99px; padding: 16px 24px; background: #151811e6; color: var(--pearl); }
+    [hidden] { display: none !important; }
+    .actions { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); width: max-content; max-width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--fade) ease, visibility 0s var(--fade); }
+    .actions.visible { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+    .save { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 13px 28px; border: 2px solid var(--green); border-radius: 999px; color: var(--pearl); background: transparent; text-decoration: none; font-size: 17px; letter-spacing: .025em; transition: background 220ms ease; }
+    .save:hover, .save:active, .save.chosen { background: var(--green); }
+    :focus-visible { outline: 2px solid var(--pearl); outline-offset: 5px; }
+    .alternatives { position: absolute; top: calc(100% + 10px); white-space: nowrap; margin: 0; font: 12px system-ui, sans-serif; color: #f5f1e7b3; }
+    .alternatives a { color: var(--pearl); padding: 8px 4px; display: inline-block; }
+    .error { position: absolute; top: 40%; max-width: 280px; text-align: center; line-height: 1.6; background: #151811e6; padding: 20px; }
+    .error a { color: var(--pearl); }
+    @media (prefers-reduced-motion: reduce) { :root { --fade: 1ms; } .save { transition: none; } }
+  </style>
+</head>
+<body>
+  <main aria-label="Anas and Reem's save the date">
+    <div class="film">
+      <video id="video" autoplay playsinline disablepictureinpicture disableremoteplayback preload="auto" aria-label="Anas and Reem's wedding invitation, 12 December 2026">
+        <source src="save-the-date.mp4" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+      <button class="play" id="play" type="button" hidden>Tap to play with sound</button>
+      <p class="error" id="error" role="alert" hidden>The invitation could not load. <a href="save-the-date.mp4">Open the video</a></p>
+    </div>
+    <div class="actions" id="actions" inert aria-hidden="true">
+      <a class="save" id="save" href="anas-and-reem.ics" target="_blank" rel="noopener">Click to Save The Date</a>
+      <p class="alternatives" id="alternatives" hidden>Or use <a id="google" target="_blank" rel="noopener">Google</a> · <a id="outlook" target="_blank" rel="noopener">Outlook</a></p>
+    </div>
+  </main>
+  <noscript><p style="text-align:center">12 December 2026 · <a href="anas-and-reem.ics" style="color:#f5f1e7">Click to Save The Date</a>. Enable JavaScript for automatic replay.</p></noscript>
+  <script>
+    const video = document.getElementById('video');
+    const actions = document.getElementById('actions');
+    const play = document.getElementById('play');
+    const save = document.getElementById('save');
+    const alternatives = document.getElementById('alternatives');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const HOLD_MS = 10000;
+    let phase = 'playing';
+    let timer;
+
+    // All-day event: the end date is exclusive (13 December).
+    const title = "Anas & Reem's Wedding";
+    const details = 'Save the date! We look forward to celebrating with you.';
+    document.getElementById('google').href = 'https://calendar.google.com/calendar/render?' + new URLSearchParams({
+      action: 'TEMPLATE', text: title, dates: '20261212/20261213', details
+    });
+    document.getElementById('outlook').href = 'https://outlook.live.com/calendar/0/deeplink/compose?' + new URLSearchParams({
+      path: '/calendar/action/compose', rru: 'addevent', subject: title,
+      startdt: '2026-12-12', enddt: '2026-12-13', allday: 'true', body: details
+    });
+
+    function showActions(show) {
+      actions.classList.toggle('visible', show);
+      actions.inert = !show;
+      actions.setAttribute('aria-hidden', String(!show));
+    }
+    async function startVideo() {
+      video.muted = false;
+      video.volume = 1;
+      try { await video.play(); play.hidden = true; }
+      catch { play.hidden = false; }
+    }
+    function fadeAndRestart() {
+      phase = 'fading';
+      showActions(false);
+      timer = setTimeout(() => {
+        alternatives.hidden = true;
+        save.classList.remove('chosen');
+        video.currentTime = 0;
+        phase = 'playing';
+        startVideo();
+      }, reducedMotion.matches ? 1 : 650);
+    }
+    video.addEventListener('ended', () => {
+      if (phase !== 'playing') return;
+      phase = 'holding';
+      play.hidden = true;
+      showActions(true);
+      clearTimeout(timer);
+      timer = setTimeout(fadeAndRestart, HOLD_MS);
+    });
+    video.addEventListener('error', () => {
+      clearTimeout(timer);
+      phase = 'error';
+      document.getElementById('error').hidden = false;
+      play.hidden = true;
+      showActions(true);
+    });
+    play.addEventListener('click', startVideo);
+    save.addEventListener('click', () => {
+      save.classList.add('chosen');
+      alternatives.hidden = false;
+    });
+    // Recover if the browser suspended playback while a calendar app was open.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && phase === 'playing' && video.paused && !video.ended) startVideo();
+    });
+    startVideo();
+  </script>
+</body>
+</html>
