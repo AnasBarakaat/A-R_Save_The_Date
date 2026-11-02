@@ -8,24 +8,33 @@
   <title>Anas & Reem · Save the Date</title>
   <link rel="icon" href="./favicon.ico?v=2" type="image/x-icon">
   <style>
+    @font-face {
+      font-family: 'Jadeite Rough';
+      src: url('./fonts/Jadeite-Rough.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
     :root { color-scheme: dark; --green: #697344; --pearl: #f5f1e7; --fade: 650ms; }
     * { box-sizing: border-box; }
-    body { margin: 0; background-color: var(--green); background-image: url('./curtain-pattern.svg'); background-repeat: repeat; background-size: 240px 640px; background-position: center top; color: var(--pearl); font-family: Georgia, 'Times New Roman', serif; }
+    body { margin: 0; background-color: var(--green); background-image: url('./curtain-pattern.svg'); background-repeat: repeat; background-size: 240px 640px; background-position: center top; color: var(--pearl); font-family: 'Jadeite Rough', Georgia, serif; }
     /* Fill the viewport height while preserving the original portrait proportions. */
     main { position: fixed; top: 0; left: 50%; transform: translateX(-50%); height: 100vh; height: 100dvh; width: auto; aspect-ratio: 9 / 16; overflow: hidden; }
     .film { position: absolute; inset: 0; display: flex; justify-content: center; }
     video { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
     button, a { -webkit-tap-highlight-color: transparent; }
     button { font: inherit; cursor: pointer; }
-    .play { position: absolute; top: 45%; border: 1px solid var(--green); border-radius: 99px; padding: 16px 24px; background: #151811e6; color: var(--pearl); }
+    .play { position: absolute; top: 53%; border: 1px solid var(--green); border-radius: 99px; padding: 16px 24px; background: #151811e6; color: var(--pearl); }
     [hidden] { display: none !important; }
-    .actions { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(320px, calc(100vw - 48px)); max-width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--fade) ease, visibility 0s var(--fade); }
+    .actions { position: absolute; z-index: 2; top: 57%; left: 50%; transform: translate(-50%, -50%); width: min(320px, calc(100vw - 45px)); max-width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--fade) ease, visibility 0s var(--fade); }
     .actions.visible { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+    .backdrop { position: absolute; inset: 0; z-index: 1; background: rgb(0 0 0 / 20%); opacity: 0; pointer-events: none; transition: opacity var(--fade) ease; }
+    .backdrop.visible { opacity: 1; }
     .description { width: 100%; margin: 0; color: var(--pearl); font-size: 18px; line-height: 1.5; text-align: center; text-wrap: balance; text-shadow: 0 2px 8px #151811cc; }
     .save { position: absolute; top: calc(100% + 24px); width: max-content; max-width: calc(100vw - 32px); display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 13px 28px; border: 2px solid var(--green); border-radius: 999px; color: var(--pearl); background: var(--green); text-decoration: none; font-size: 17px; letter-spacing: .025em; transition: background 220ms ease;  }
     .save:hover, .save:active, .save.chosen { background: var(--green); }
     :focus-visible { outline: 2px solid var(--pearl); outline-offset: 5px; }
-    .alternatives { position: absolute; top: calc(100% + 86px); white-space: nowrap; margin: 0; font: 12px system-ui, sans-serif; color: #f5f1e7b3; }
+    .alternatives { position: absolute; top: calc(100% + 86px); white-space: nowrap; margin: 0; font-size: 12px; color: var(--pearl); }
     .alternatives a { color: var(--pearl); padding: 8px 4px; display: inline-block; }
     .error { position: absolute; top: 40%; max-width: 280px; text-align: center; line-height: 1.6; background: #151811e6; padding: 20px; }
     .error a { color: var(--pearl); }
@@ -42,6 +51,7 @@
       <button class="play" id="play" type="button" hidden>Tap to play with sound</button>
       <p class="error" id="error" role="alert" hidden>The invitation could not load. <a href="./save-the-date.mp4">Open the video</a></p>
     </div>
+    <div class="backdrop" id="backdrop" aria-hidden="true"></div>
     <div class="actions" id="actions" inert aria-hidden="true">
       <p class="description" id="description">Some moments in life feel almost too special to put into words, and this is one of them.</p>
       <a class="save" id="save" href="anas-and-reem.ics" target="_blank" rel="noopener">Click to Save The Date</a>
@@ -52,6 +62,7 @@
   <script>
     const video = document.getElementById('video');
     const actions = document.getElementById('actions');
+    const backdrop = document.getElementById('backdrop');
     const play = document.getElementById('play');
     const save = document.getElementById('save');
     const alternatives = document.getElementById('alternatives');
@@ -90,6 +101,7 @@ document.getElementById('outlook').href =
   });
 
     function showActions(show) {
+      backdrop.classList.toggle('visible', show);
       actions.classList.toggle('visible', show);
       actions.inert = !show;
       actions.setAttribute('aria-hidden', String(!show));
