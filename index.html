@@ -24,7 +24,7 @@
     video { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
     button, a { -webkit-tap-highlight-color: transparent; }
     button { font: inherit; cursor: pointer; }
-    .play { position: absolute; top: 53%; border: 1px solid var(--green); border-radius: 99px; padding: 16px 24px; background: #151811e6; color: var(--pearl); }
+    .play { position: absolute; top: 53%; border: 1px solid var(--green); border-radius: 99px; padding: 16px 24px; background: var(--green); color: var(--pearl); }
     [hidden] { display: none !important; }
     .actions { position: absolute; z-index: 2; top: 57%; left: 50%; transform: translate(-50%, -50%); width: min(320px, calc(100vw - 45px)); max-width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity var(--fade) ease, visibility 0s var(--fade); }
     .actions.visible { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
@@ -53,12 +53,12 @@
     </div>
     <div class="backdrop" id="backdrop" aria-hidden="true"></div>
     <div class="actions" id="actions" inert aria-hidden="true">
-      <p class="description" id="description">Some moments in life feel almost too special to put into words, and this is one of them.</p>
-      <a class="save" id="save" href="anas-and-reem.ics" target="_blank" rel="noopener">Click to Save The Date</a>
-      <p class="alternatives" id="alternatives" hidden>Or use <a id="google" target="_blank" rel="noopener">Google</a> · <a id="outlook" target="_blank" rel="noopener">Outlook</a></p>
+      <p class="description" id="description">Our forever begins soon</p>
+      <a class="save" id="save" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Anas+%26+Reem%27s+Wedding+%7C+Jumeirah+Gulf+of+Bahrain+%F0%9F%92%8D%F0%9F%A4%8D&amp;dates=20261212T200000%2F20261213T040000&amp;ctz=Asia%2FBahrain&amp;details=&amp;location=Jumeirah+Gulf+of+Bahrain" target="_blank" rel="noopener">Click to Save The Date</a>
+      <p class="alternatives" id="alternatives">Or use <a id="apple" href="./anas-and-reem.ics" target="_blank" rel="noopener">Apple Calendar</a> · <a id="outlook" target="_blank" rel="noopener">Outlook</a></p>
     </div>
   </main>
-  <noscript><p style="text-align:center">12 December 2026 · <a href="anas-and-reem.ics" style="color:#f5f1e7">Click to Save The Date</a>. Enable JavaScript for automatic replay.</p></noscript>
+  <noscript><p style="text-align:center">12 December 2026 · <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Anas+%26+Reem%27s+Wedding+%7C+Jumeirah+Gulf+of+Bahrain+%F0%9F%92%8D%F0%9F%A4%8D&amp;dates=20261212T200000%2F20261213T040000&amp;ctz=Asia%2FBahrain&amp;details=&amp;location=Jumeirah+Gulf+of+Bahrain" style="color:#f5f1e7">Click to Save The Date</a>. Enable JavaScript for automatic replay.</p></noscript>
   <script>
     const video = document.getElementById('video');
     const actions = document.getElementById('actions');
@@ -75,9 +75,16 @@
     // All-day event: the end date is exclusive (13 December).
     const title = "Anas & Reem's Wedding | Jumeirah Gulf of Bahrain 💍🤍";
     const eventLocation = "Jumeirah Gulf of Bahrain";
-    const details = '';
+    const details = `Our wedding is happening this December, and we honestly couldn't be more excited to celebrate with you!
+    
+    We've poured so much love into creating a little world of our own, and here's your very first glimpse of it! 🎠🌟
+    
+    One little request: We'd really appreciate an early confirmation that you'll be joining us! And if you'd love to bring a plus one, please let us know in advance so we can make sure every lovely person is accounted for!
+    
+    With sooo much love,
+    Anas & Reem 🤍`;
 // GOOGLE CALENDAR
-document.getElementById('google').href =
+save.href =
   'https://calendar.google.com/calendar/render?' +
   new URLSearchParams({
     action: 'TEMPLATE',
@@ -116,7 +123,7 @@ document.getElementById('outlook').href =
       phase = 'fading';
       showActions(false);
       timer = setTimeout(() => {
-        alternatives.hidden = true;
+        alternatives.hidden = false;
         save.classList.remove('chosen');
         video.currentTime = 0;
         phase = 'playing';
